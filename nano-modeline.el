@@ -437,14 +437,10 @@
 (defun nano-modeline-default-mode ()
     (let ((buffer-name (format-mode-line "%b"))
           (mode-name   (nano-mode-name))
-          (branch      (vc-branch))
           (position    (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
                              buffer-name
-                             (concat "(" mode-name
-                                     (if branch (concat ", "
-                                            (propertize branch 'face 'italic)))
-                                     ")" )
+                             (concat "(" mode-name ") " (pomm-format-mode-line))
                              position)))
 
 ;; ---------------------------------------------------------------------
