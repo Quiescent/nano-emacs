@@ -338,10 +338,7 @@
           (position    (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
                              buffer-name 
-                             (concat "(" mode-name
-                                     (if branch (concat ", "
-                                             (propertize branch 'face 'italic)))
-                                     ")" )
+                             (concat "(" mode-name ") " (pomm-format-mode-line))
                              org-mode-line-string)))
 
 ;; ---------------------------------------------------------------------
@@ -435,9 +432,13 @@
   (derived-mode-p 'text-mode))
 
 (defun nano-modeline-default-mode ()
-    (let ((buffer-name (format-mode-line "%b"))
-          (mode-name   (nano-mode-name))
-          (position    (format-mode-line "%l:%c")))
+    (let* ((buffer-name   (format-mode-line "%b"))
+           (raw-mode-name (nano-mode-name))
+           (mode-name     (if (and (consp raw-mode-name)
+                                   (eq :eval (car raw-mode-name)))
+                              (eval (cadr raw-mode-name))
+                            raw-mode-name))
+          (position       (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
                              buffer-name
                              (concat "(" mode-name ") " (pomm-format-mode-line))
