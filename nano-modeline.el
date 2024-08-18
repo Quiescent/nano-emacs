@@ -333,7 +333,7 @@
 
 (defun nano-modeline-org-clock-mode ()
     (let ((buffer-name (format-mode-line "%b"))
-          (mode-name   (nano-mode-name))
+          (mode-name   (nano-printable-mode-name (nano-mode-name)))
           (branch      (vc-branch))
           (position    (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
@@ -431,14 +431,16 @@
 (defun nano-modeline-text-mode-p ()
   (derived-mode-p 'text-mode))
 
+(defun nano-printable-mode-name (raw-mode-name)
+  (if (and (consp raw-mode-name)
+           (eq :eval (car raw-mode-name)))
+      (eval (cadr raw-mode-name))
+    raw-mode-name))
+
 (defun nano-modeline-default-mode ()
-    (let* ((buffer-name   (format-mode-line "%b"))
-           (raw-mode-name (nano-mode-name))
-           (mode-name     (if (and (consp raw-mode-name)
-                                   (eq :eval (car raw-mode-name)))
-                              (eval (cadr raw-mode-name))
-                            raw-mode-name))
-          (position       (format-mode-line "%l:%c")))
+    (let* ((buffer-name (format-mode-line "%b"))
+           (mode-name   (nano-printable-mode-name (nano-mode-name)))
+          (position     (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
                              buffer-name
                              (concat "(" mode-name ") " (pomm-format-mode-line))
