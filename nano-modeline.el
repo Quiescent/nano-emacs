@@ -432,15 +432,16 @@
   (derived-mode-p 'text-mode))
 
 (defun nano-printable-mode-name (raw-mode-name)
-  (if (and (consp raw-mode-name)
-           (eq :eval (car raw-mode-name)))
-      (eval (cadr raw-mode-name))
-    raw-mode-name))
+  (cond
+   ((and (consp raw-mode-name)
+         (eq :eval (car raw-mode-name))) (eval (cadr raw-mode-name)))
+   ((symbolp raw-mode-name) (symbol-name raw-mode-name))
+   (t raw-mode-name)))
 
 (defun nano-modeline-default-mode ()
     (let* ((buffer-name (format-mode-line "%b"))
            (mode-name   (nano-printable-mode-name (nano-mode-name)))
-          (position     (format-mode-line "%l:%c")))
+           (position    (format-mode-line "%l:%c")))
       (nano-modeline-compose (nano-modeline-status)
                              buffer-name
                              (concat "(" mode-name ") " (pomm-format-mode-line))
